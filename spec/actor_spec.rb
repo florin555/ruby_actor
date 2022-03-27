@@ -164,5 +164,8 @@ describe Actor do
 
       expect(elements(messages)).to match [300, 400]
     end
+
+    xit 'is possible to pipe the output of one actor into the input of another' do
+    end
   end
 end
