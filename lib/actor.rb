@@ -7,16 +7,23 @@ class Actor
     def on_message=(block)
       @on_message = block
     end
+
+    def on_message(&block)
+      self.on_message = block
+    end
   end
+
+  attr_reader :inbox
 
   def initialize(&block)
     @block = block
     @outbox = Outbox.new
+    @inbox = Outbox.new
   end
 
   def run
     @thread = Thread.new do
-      @block.call(@outbox)
+      @block.call(@outbox, @inbox)
     end
     @thread.abort_on_exception = true
     @thread.report_on_exception = false

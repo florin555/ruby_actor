@@ -143,5 +143,28 @@ describe Actor do
 
       expect(elements(messages)).to match [100, 200]
     end
+
+    it 'can receive messages trough an inbox' do
+      messages = Thread::Queue.new
+
+      actor = Actor.new do |outbox, inbox|
+        inbox.on_message do |message|
+          messages << message
+        end
+        sleep
+      end
+
+      actor.run
+
+      sleep 0.1
+
+      actor.inbox.push 300
+      actor.inbox.push 400
+
+      sleep 0.1
+      actor.stop
+
+      expect(elements(messages)).to match [300, 400]
+    end
   end
 end
