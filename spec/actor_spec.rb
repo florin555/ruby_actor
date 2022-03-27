@@ -133,7 +133,7 @@ describe Actor do
         outbox.push 200
         sleep # This is to ensure that the implementation uses a thread.
       end
-      actor.on_message do |message|
+      actor.outbox.on_message do |message|
         messages << message
       end
 
