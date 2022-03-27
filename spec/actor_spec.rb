@@ -161,7 +161,32 @@ describe Actor do
       expect(elements(messages)).to match [300, 400]
     end
 
-    xit 'is possible to pipe the output of one actor into the input of another' do
+    it 'is possible to pipe the output of one actor into the input of another' do
+      actor_1 = Actor.new do |inbox, outbox|
+        while true
+          outbox << inbox.pop.upcase
+        end
+      end
+      actor_2 = Actor.new do |inbox, outbox|
+        while true
+          outbox << inbox.pop.reverse
+        end
+      end
+
+      actor_1 | actor_2
+
+      actor_1.run
+      actor_2.run
+
+      actor_1.inbox.push 'abc'
+      actor_1.inbox.push 'def'
+
+      result = []
+
+      result << actor_2.outbox.pop
+      result << actor_2.outbox.pop
+
+      expect(result).to match(['CBA', 'FED'])
     end
   end
 end

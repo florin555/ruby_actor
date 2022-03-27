@@ -30,4 +30,9 @@ class Actor
     @thread.kill
     @on_stop.call if @on_stop
   end
+
+  def |(other)
+    @outbox = other.inbox
+    other
+  end
 end
