@@ -126,7 +126,7 @@ describe Actor do
 
   describe 'message passing' do
     it 'can send messages to an outbox' do
-      messages = []
+      messages = Thread::Queue.new
 
       actor = Actor.new do |outbox|
         outbox.push 100
@@ -141,7 +141,7 @@ describe Actor do
       sleep 0.1
       actor.stop
 
-      expect(messages).to match [100, 200]
+      expect(elements(messages)).to match [100, 200]
     end
   end
 end
