@@ -128,7 +128,7 @@ describe Actor do
     it 'can send messages to an outbox' do
       messages = Thread::Queue.new
 
-      actor = Actor.new do |outbox|
+      actor = Actor.new do |_, outbox|
         outbox.push 100
         outbox.push 200
       end
@@ -144,7 +144,7 @@ describe Actor do
     it 'can receive messages trough an inbox' do
       messages = Thread::Queue.new
 
-      actor = Actor.new do |outbox, inbox|
+      actor = Actor.new do |inbox|
         while true
           messages << inbox.pop
         end

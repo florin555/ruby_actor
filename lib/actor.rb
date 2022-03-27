@@ -10,7 +10,7 @@ class Actor
 
   def run
     @thread = Thread.new do
-      @block.call(@outbox, @inbox)
+      @block.call(@inbox, @outbox)
     end
     @thread.abort_on_exception = true
     @thread.report_on_exception = false
