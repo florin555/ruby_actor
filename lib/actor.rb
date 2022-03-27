@@ -1,11 +1,15 @@
 class Actor
   class MessageBus
-    def push(message)
-      @on_message.call(message)
+    def initialize
+      @messages = Thread::Queue.new
     end
 
-    def on_message(&block)
-      @on_message = block
+    def push(message)
+      @messages << message
+    end
+
+    def pop
+      @messages.pop
     end
   end
 
@@ -20,7 +24,7 @@ class Actor
 
   def run
     @thread = Thread.new do
-      @block.call(@outbox)
+      @block.call(@outbox, @inbox)
     end
     @thread.abort_on_exception = true
     @thread.report_on_exception = false

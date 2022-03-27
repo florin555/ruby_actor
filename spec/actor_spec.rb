@@ -131,15 +131,12 @@ describe Actor do
       actor = Actor.new do |outbox|
         outbox.push 100
         outbox.push 200
-        sleep # This is to ensure that the implementation uses a thread.
-      end
-      actor.outbox.on_message do |message|
-        messages << message
       end
 
       actor.run
-      sleep 0.1
-      actor.stop
+
+      messages << actor.outbox.pop
+      messages << actor.outbox.pop
 
       expect(elements(messages)).to match [100, 200]
     end
@@ -147,11 +144,10 @@ describe Actor do
     it 'can receive messages trough an inbox' do
       messages = Thread::Queue.new
 
-      actor = Actor.new do |outbox|
-        sleep
-      end
-      actor.inbox.on_message do |message|
-        messages << message
+      actor = Actor.new do |outbox, inbox|
+        while true
+          messages << inbox.pop
+        end
       end
 
       actor.run
