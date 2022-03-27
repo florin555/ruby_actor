@@ -125,5 +125,21 @@ describe Actor do
   end
 
   describe 'message passing' do
+    it 'can send messages to an outbox' do
+      messages = []
+
+      actor = Actor.new do |outbox|
+        outbox.push 100
+        outbox.push 200
+      end
+      actor.on_message do |message|
+        messages << message
+      end
+
+      actor.run
+      actor.join
+
+      expect(messages).to match [100, 200]
+    end
   end
 end

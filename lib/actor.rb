@@ -1,14 +1,26 @@
 class Actor
+  class Outbox
+    def push(message)
+      @on_message.call(message)
+    end
+
+    def on_message=(block)
+      @on_message = block
+    end
+  end
+
   def initialize(&block)
     @block = block
+    @outbox = Outbox.new
   end
 
   def run
     @thread = Thread.new do
-      @block.call
+      @block.call(@outbox)
     end
     @thread.abort_on_exception = true
     @thread.report_on_exception = false
+
     nil
   end
 
@@ -18,6 +30,10 @@ class Actor
 
   def on_stop(&block)
     @on_stop = block
+  end
+
+  def on_message(&block)
+    @outbox.on_message = block
   end
 
   def stop
