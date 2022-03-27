@@ -131,13 +131,15 @@ describe Actor do
       actor = Actor.new do |outbox|
         outbox.push 100
         outbox.push 200
+        sleep # This is to ensure that the implementation uses a thread.
       end
       actor.on_message do |message|
         messages << message
       end
 
       actor.run
-      actor.join
+      sleep 0.1
+      actor.stop
 
       expect(messages).to match [100, 200]
     end
