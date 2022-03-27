@@ -1,25 +1,11 @@
 class Actor
-  class MessageBus
-    def initialize
-      @messages = Thread::Queue.new
-    end
-
-    def push(message)
-      @messages << message
-    end
-
-    def pop
-      @messages.pop
-    end
-  end
-
   attr_reader :inbox
   attr_reader :outbox
 
   def initialize(&block)
     @block = block
-    @outbox = MessageBus.new
-    @inbox = MessageBus.new
+    @outbox = Thread::Queue.new
+    @inbox = Thread::Queue.new
   end
 
   def run
