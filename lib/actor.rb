@@ -28,10 +28,11 @@ class Actor
 
   def stop
     @thread.kill
+    @thread.join
     @on_stop.call if @on_stop
   end
 
-  def |(other)
+  def pipe(other)
     @outbox = other.inbox
     other
   end

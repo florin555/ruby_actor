@@ -14,6 +14,13 @@ describe Actor do
     array
   end
 
+  around(:each) do |example|
+    threads_before = Thread.list.size
+    example.run
+    threads_after = Thread.list.size
+    expect(threads_after).to eq(threads_before)
+  end
+
   describe 'basics' do
     it 'can run some code' do
       queue = Thread::Queue.new
@@ -173,7 +180,7 @@ describe Actor do
         end
       end
 
-      actor_1 | actor_2
+      actor_1.pipe(actor_2)
 
       actor_1.run
       actor_2.run
@@ -187,6 +194,9 @@ describe Actor do
       result << actor_2.outbox.pop
 
       expect(result).to match(['CBA', 'FED'])
+
+      actor_1.stop
+      actor_2.stop
     end
   end
 end

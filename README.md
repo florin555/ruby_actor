@@ -8,4 +8,9 @@ Trying to solve following problems of Ruby Threads:
 More features to be implemented:
 
   - Message passing between actors (inbox, outbox) and "piping together" two actors.
-  - Actor that runs an external program and writes lines to the outbox.
+
+A special type of actor: one that runs an external program and writes lines to the outbox.
+
+  - Send the program's output lines as events to the outbox.
+  - Be able to shut down the program.
+  - Detect if the program exits with an error.
